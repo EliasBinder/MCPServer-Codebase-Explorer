@@ -2,6 +2,8 @@ import json
 import re
 import os
 
+from utils.agentignore_parser import is_path_ignored
+
 def read_file_contents(base_path: str, path: str, regex: str | None = None):
   # Remove starting slash from path if it exists
   if path.startswith("/"):
@@ -9,6 +11,9 @@ def read_file_contents(base_path: str, path: str, regex: str | None = None):
 
   # List all files and directories in the given path
   combined_path = os.path.join(base_path, path)
+  if (is_path_ignored(os.path.join(base_path, path))):
+    return json.dumps({"error": "File Not Found. Please check if the path is correct"}, indent=2)
+
   try:
     # Open the file in read mode
     with open(combined_path, 'r') as file:

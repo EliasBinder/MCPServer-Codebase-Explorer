@@ -1,6 +1,8 @@
 import os
 import json
 
+from utils.agentignore_parser import is_path_ignored
+
 def list_directory(base_path, path):
   try:
     # Remove starting slash from path if it exists
@@ -16,6 +18,8 @@ def list_directory(base_path, path):
 
     for item in items:
       item_path = "/" + os.path.join(path, item)
+      if (is_path_ignored(os.path.join(combined_path, item))):
+        continue  # Skip ignored paths
       if os.path.isdir(os.path.join(combined_path, item)):
         results.append({"type": "directory", "path": item_path, "name": item})
       else:
